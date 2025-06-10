@@ -98,10 +98,10 @@ console.log(animals);
 // Etape 2 - Affichage des données ---------------------------------------------------------------------------
 
 // Fonction pour afficher les animaux
-function displayAnimals() {
+function displayAnimals(animals) {
   const div = document.getElementById("animals");
   div.innerHTML = ""; // Vider la div avant affichage
-
+  const animalsList = animals;
   animals.forEach((animal) => {
     const card = document.createElement("div");
     card.className = "animal-card";
@@ -114,48 +114,38 @@ function displayAnimals() {
     div.appendChild(card);
   });
 }
-displayAnimals();
+// displayAnimals();
 
 // Etape 3 - Affichage des données ---------------------------------------------------------------------------
+
+// Affichage initial de tous les animaux
 displayAnimals(animals);
 
-// EventListener sur le select pour filtrer
+// EventListener pour le filtrage
 const animalFilter = document.getElementById("animalFilter");
 
-animalFilter.addEventListener("change", (e) => {
+animalFilter.addEventListener("change", function () {
   const selectedCategory = animalFilter.value;
 
+  console.log("Catégorie sélectionnée:", selectedCategory);
+
   if (selectedCategory === "tous") {
-    // Affiche tous les animals
+    // Afficher tous les animaux
     displayAnimals(animals);
   } else {
     // Filtrer par catégorie
-    const filtered = animals.filter(
-      (animal) => animal.categorie === selectedCategory
-    );
+    const filtered = animals.filter((animal) => {
+      console.log(
+        `Animal: ${animal.nom}, Catégorie: ${animal.categorie}, Match: ${
+          animal.categorie === selectedCategory
+        }`
+      );
+      return animal.categorie === selectedCategory;
+    });
+
+    console.log("Animaux filtrés:", filtered);
+
+    // Afficher les animaux filtrés
     displayAnimals(filtered);
   }
 });
-
-// displayAnimals(animals);
-
-// EventListener sur le select pour filtrer
-
-// const animalFilter = document.getElementById("animalFilter");
-// animalFilter.addEventListener("change", () => {
-//   // const selectedCategory = animalFilter.value;
-//   let filterAnimals = [];
-
-//   if (animalFilter.value === "terrestre") {
-//     animals.filter((animal) => animal.categorie);
-//   } else if (animalFilter.value === "aquatique") {
-//     animals.filter((animal) => animal.categorie);
-//   } else if (animalFilter.value === "Volant") {
-//     animals.filter((animal) => animal.categorie);
-//   } else if (animalFilter.value === "tous") {
-//     animals.filter((animal) => animal.categorie);
-//   } else {
-//     displayAnimals(animals);
-//   }
-//   displayAnimals(filterAnimals);
-// });
