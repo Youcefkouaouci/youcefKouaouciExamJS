@@ -1,8 +1,9 @@
 import "./styles.css";
-/*
-la valeur des données dont génerer par chatgbt mais la syntaxe est presacquise pendant le cours JS
-    const or let plurale name [tableau {proprieté}] = object
-    exemple : 
+// Etape 1 - Création des données les données
+
+/**Note 1
+ * const or let plurale name [tableau {proprieté}] = object
+ * exemple syntaxique : 
     const animals = [
         {
         nom: "",
@@ -11,9 +12,8 @@ la valeur des données dont génerer par chatgbt mais la syntaxe est presacquise
         image: "",
         },
     ];
+ * 
  */
-
-// Etape 1 - Création des données les données ---------------------------------------------------------------------------
 
 const animals = [
   {
@@ -52,12 +52,10 @@ const animals = [
   },
 ];
 
-// Créer instances de votre classe en utilisant le constructeur et mettez les dans un tableau-----------------------
-
-/*
-pour la réalisation de cette partie de l'exam j'ai checker la documentation 
-url 'https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Classes'
-*/
+/**Note 2
+ * Créer instances de votre classe | en utilisant le constructeur | et mettez les dans un tableau |
+ * Pour réaliser cette partie de l'examen, j'ai consulté la documentation url 'https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Classes'.
+ */
 
 class Animal {
   constructor(nom, description, categorie, image) {
@@ -67,21 +65,36 @@ class Animal {
     this.image = image;
   }
 }
+// debug and test :
 // console.log(Animal);
 
-// Exemple d'instanciation
 const Loup = new Animal(
   "Loup",
   "quadrupède, couvert de fourrure habituellement grise.",
   "terrestre",
   "https://upload.wikimedia.org/wikipedia/commons/e/e8/Loup_gris_%28Canis_lupus_%29.jpg"
 );
+
 animals.push(Loup);
 
+// debug and test :
 // console.log(Loup);
 
-// La méthode latérale :-------------------------------------------------------------------------------------
+/**Note 3 Autre Méthode Latérale de crée instance objet et l'ajouter tableau
+ *
+ * const animal = {
+ *  nom: "Loup",
+ *  description: "quadrupède, couvert de fourrure habituellement grise.",
+ *  categorie: "terrestre",
+ *  image:
+ *  "https://upload.wikimedia.org/wikipedia/commons/e/e8/Loup_gris_%28Canis_lupus_%29.jpg",
+ * };
+ *
+ * debug and test :
+ * console.log(animal);
+ */
 
+// La méthode latérale :
 // const animal = {
 //   nom: "Loup",
 //   description: "quadrupède, couvert de fourrure habituellement grise.",
@@ -92,16 +105,20 @@ animals.push(Loup);
 
 // console.log(animal);
 
-// Console.log animals tableau--------------------------------------------------------------------------------
+// debug and test :
 console.log(animals);
 
-// Etape 2 - Affichage des données ---------------------------------------------------------------------------
+// Etape 2 - Affichage des données
 
 // Fonction pour afficher les animaux
 function displayAnimals(animals) {
   const div = document.getElementById("animals");
-  div.innerHTML = ""; // Vider la div avant affichage
+
+  // Vider la div avant affichage
+  div.innerHTML = "";
+
   const animalsList = animals;
+
   animals.forEach((animal) => {
     const card = document.createElement("div");
     card.className = "animal-card";
@@ -111,12 +128,12 @@ function displayAnimals(animals) {
       <p><strong>Catégorie :</strong> ${animal.categorie}</p>
       <img src="${animal.image}" alt="${animal.nom}">
     `;
+
     div.appendChild(card);
   });
 }
-// displayAnimals();
 
-// Etape 3 - Affichage des données ---------------------------------------------------------------------------
+// Etape 3 - Filtrage des données
 
 // Affichage initial de tous les animaux
 displayAnimals(animals);
@@ -150,122 +167,93 @@ animalFilter.addEventListener("change", function () {
   }
 });
 
-// Etape 4 - ---------------------------------------------------------------------------
-// Fonction de validation
-function validateForm(formData) {
-  let isValid = true;
-  const errors = {};
+// Etape 4 - Formulaire et ajout des données
 
-  // Validation du nom
-  if (!formData.nom.trim()) {
-    errors.nom = "Le nom est obligatoire";
-    isValid = false;
+// Event listener SUBMIT sur le form
+const animalForm = document.getElementById("animalForm");
+
+animalForm.addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const nomInput = document.getElementById("nomInput");
+  const descriptionInput = document.getElementById("descriptionInput");
+  const categorieInput = document.getElementById("categorieInput");
+  const imageInput = document.getElementById("imageInput");
+
+  let errors = [];
+
+  const validCategories = ["terrestre", "aquatique", "volant"];
+
+  // Validation NOM
+  if (nomInput.value.trim().length === 0) {
+    errors.push("Le nom est obligatoire");
   }
 
-  // Validation de la description
-  if (!formData.description.trim()) {
-    errors.description = "La description est obligatoire";
-    isValid = false;
+  // Validation DESCRIPTION
+  if (descriptionInput.value.trim().length === 0) {
+    errors.push("La description est obligatoire");
   }
 
-  // Validation de la catégorie
-  if (!formData.categorie) {
-    errors.categorie = "Veuillez sélectionner une catégorie";
-    isValid = false;
-  } else if (!validCategories.includes(formData.categorie)) {
-    errors.categorie =
-      "Catégorie inconnue. Les catégories valides sont : terrestre, aquatique, volant";
-    isValid = false;
+  // Validation CATÉGORIE
+  if (categorieInput.value.trim().length === 0) {
+    errors.push("Veuillez sélectionner une catégorie");
+  } else if (
+    !validCategories.includes(categorieInput.value.trim().toLowerCase())
+  ) {
+    errors.push(
+      "Catégorie inconnue. Les catégories valides sont : terrestre, aquatique, volant"
+    );
   }
 
-  // Validation de l'image
-  if (!formData.image.trim()) {
-    errors.image = "Le lien de l'image est obligatoire";
-    isValid = false;
+  // Validation IMAGE (URL)
+  if (imageInput.value.trim().length === 0) {
+    errors.push("Le lien de l'image est obligatoire");
   } else {
     try {
-      new URL(formData.image);
+      new URL(imageInput.value.trim());
     } catch {
-      errors.image = "Veuillez entrer une URL valide";
-      isValid = false;
+      errors.push("Veuillez entrer une URL valide pour l'image");
     }
   }
 
-  return { isValid, errors };
+  // Si aucune erreur
+  if (errors.length === 0) {
+    document.getElementById("errors").innerHTML = "";
+
+    const newAnimal = new Animal(
+      nomInput.value.trim(),
+      descriptionInput.value.trim(),
+      categorieInput.value.trim(),
+      imageInput.value.trim()
+    );
+
+    animals.push(newAnimal);
+    displayAnimals(animals);
+    animalForm.reset();
+    showSuccessMessage();
+    console.log("Nouvel animal ajouté:", newAnimal);
+  } else {
+    displayFlatErrors(errors);
+  }
+});
+
+function displayFlatErrors(errors) {
+  const errorContainer = document.getElementById("errors");
+  errorContainer.innerHTML = "";
+  errors.forEach((err) => {
+    const p = document.createElement("p");
+    p.textContent = err;
+    p.style.color = "red";
+    errorContainer.appendChild(p);
+  });
 }
 
-// Fonction pour afficher les erreurs
-function displayErrors(errors) {
-  // Effacer toutes les erreurs précédentes
-  document.querySelectorAll(".form-group").forEach((group) => {
-    group.classList.remove("error");
-  });
-
-  // Afficher les nouvelles erreurs
-  Object.keys(errors).forEach((field) => {
-    const input = document.querySelector(`[name="${field}"]`);
-    if (input) {
-      const formGroup = input.closest(".form-group");
-      formGroup.classList.add("error");
-      const errorMessage = formGroup.querySelector(".error-message");
-      errorMessage.textContent = errors[field];
-    }
-  });
-}
-
-// Fonction pour effacer les erreurs
-function clearErrors() {
-  document.querySelectorAll(".form-group").forEach((group) => {
-    group.classList.remove("error");
-  });
-}
-
-// Fonction pour afficher le message de succès
+//  probleme fixed with chatgpt
 function showSuccessMessage() {
   const successMessage = document.getElementById("successMessage");
   successMessage.style.display = "block";
+
   setTimeout(() => {
     successMessage.style.display = "none";
   }, 3000);
 }
-
-// Gestionnaire de soumission du formulaire
-document.getElementById("animalForm").addEventListener("submit", function (e) {
-  e.preventDefault();
-
-  const formData = new FormData(this);
-  const animalData = {
-    nom: formData.get("nom"),
-    description: formData.get("description"),
-    categorie: formData.get("categorie"),
-    image: formData.get("image"),
-  };
-
-  const validation = validateForm(animalData);
-
-  if (validation.isValid) {
-    // Créer une nouvelle instance d'Animal
-    const newAnimal = new Animal(
-      animalData.nom,
-      animalData.description,
-      animalData.categorie,
-      animalData.image
-    );
-
-    // Ajouter au tableau
-    animals.push(newAnimal);
-
-    // Réafficher tous les animaux
-    displayAnimals(animals);
-
-    // Réinitialiser le formulaire
-    this.reset();
-    clearErrors();
-    showSuccessMessage();
-
-    console.log("Nouvel animal ajouté:", newAnimal);
-    console.log("Tableau animals mis à jour:", animals);
-  } else {
-    displayErrors(validation.errors);
-  }
-});
